@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markalar Platformu - Tekstil Markaları</title>
+    <meta name="description" content="Markalar Platformu - Tekstil markalarına kolayca ulaşın. WhatsApp ve Telegram ile doğrudan iletişim kurun.">
+    <meta name="keywords" content="tekstil markaları, marka platformu, giyim markaları, ayakkabı markaları, aksesuar markaları">
+    <meta name="author" content="Markalar Platformu">
+    <link rel="canonical" href="https://markalarplatformu.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <h1>Markalar Platformu</h1>
+        <p>Tekstil markalarına kolayca ulaşın. İlgilendiğiniz markaya tıklayarak iletişim kurun.</p>
+    </header>
+
+    <!-- Arama ve Filtreleme Bölümü -->
+    <div class="controls">
+        <input type="text" id="searchInput" placeholder="Marka ara...">
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">Tümü</button>
+            <button class="filter-btn" data-filter="A-G">A-G</button>
+            <button class="filter-btn" data-filter="H-O">H-O</button>
+            <button class="filter-btn" data-filter="P-Z">P-Z</button>
+        </div>
+    </div>
+
+    <main class="brand-container">
+        <!-- Markalar dinamik olarak yüklenecek -->
+        <div class="loading" id="loadingIndicator" style="text-align: center; padding: 40px; color: #666;">
+            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 10px;"></i>
+            <p>Markalar yükleniyor...</p>
+        </div>
+    </main>
+
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modalBrandName"></h2>
+            <p>Lütfen iletişime geçmek istediğiniz platformu seçin:</p>
+            <div class="modal-buttons">
+                <a id="telegram-link" href="#" target="_blank" class="contact-button telegram">Telegram</a>
+                <a id="whatsapp-link" href="#" target="_blank" class="contact-button whatsapp">WhatsApp</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
