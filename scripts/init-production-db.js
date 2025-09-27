@@ -6,12 +6,15 @@ const Brand = require('../models/Brand');
 // Production environment variables
 require('dotenv').config({ path: './config.production.env' });
 
+// MongoDB Atlas connection string (gerçek bilgilerle)
+const MONGODB_URI = 'mongodb+srv://marka-user:Mahsum.47@mahsumx.7mtvimh.mongodb.net/marka_db?retryWrites=true&w=majority&appName=Mahsumx';
+
 async function initProductionDatabase() {
     try {
         console.log('🚀 Production veritabanı başlatılıyor...');
         
         // MongoDB bağlantısı
-        await mongoose.connect(process.env.MONGODB_URI, {
+        await mongoose.connect(MONGODB_URI, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });

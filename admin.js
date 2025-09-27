@@ -1,7 +1,10 @@
 // Admin Panel JavaScript
 class AdminPanel {
     constructor() {
-        this.apiBase = 'http://localhost:3000/api';
+        // ⚠️ DÜZELTME: Production ve development için dinamik API URL
+        this.apiBase = window.location.hostname === 'localhost' 
+            ? 'http://localhost:3000/api' 
+            : '/api';
         this.token = localStorage.getItem('adminToken');
         this.currentPage = 1;
         this.totalPages = 1;
