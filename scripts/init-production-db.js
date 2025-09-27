@@ -1,13 +1,17 @@
-// Veritabanı başlatma scripti
+// Production veritabanı başlatma scripti
 const mongoose = require('mongoose');
 const Admin = require('../models/Admin');
 const Brand = require('../models/Brand');
-require('dotenv').config({ path: './config.env' });
 
-async function initDatabase() {
+// Production environment variables
+require('dotenv').config({ path: './config.production.env' });
+
+async function initProductionDatabase() {
     try {
+        console.log('🚀 Production veritabanı başlatılıyor...');
+        
         // MongoDB bağlantısı
-        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/marka_db', {
+        await mongoose.connect(process.env.MONGODB_URI, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
@@ -19,13 +23,14 @@ async function initDatabase() {
         if (!existingAdmin) {
             const admin = new Admin({
                 username: 'admin',
-                email: process.env.ADMIN_EMAIL || 'admin@marka.com',
-                password: process.env.ADMIN_PASSWORD || 'admin123',
+                email: process.env.ADMIN_EMAIL,
+                password: process.env.ADMIN_PASSWORD,
                 role: 'admin'
             });
             
             await admin.save();
             console.log('✅ Admin kullanıcısı oluşturuldu');
+            console.log('📧 Email:', process.env.ADMIN_EMAIL);
         } else {
             console.log('ℹ️ Admin kullanıcısı zaten mevcut');
         }
@@ -153,12 +158,12 @@ async function initDatabase() {
             console.log('ℹ️ Markalar zaten mevcut');
         }
 
-        console.log('🎉 Veritabanı başlatma tamamlandı!');
-        console.log('📧 Admin Email:', process.env.ADMIN_EMAIL || 'admin@marka.com');
-        console.log('🔑 Admin Şifre:', process.env.ADMIN_PASSWORD || 'admin123');
+        console.log('🎉 Production veritabanı başlatma tamamlandı!');
+        console.log('🌐 Site URL:', 'https://markalarplatformu.com');
+        console.log('📧 Admin Email:', process.env.ADMIN_EMAIL);
         
     } catch (error) {
-        console.error('❌ Veritabanı başlatma hatası:', error);
+        console.error('❌ Production veritabanı başlatma hatası:', error);
     } finally {
         await mongoose.connection.close();
         process.exit(0);
@@ -166,4 +171,4 @@ async function initDatabase() {
 }
 
 // Script çalıştır
-initDatabase();
+initProductionDatabase();

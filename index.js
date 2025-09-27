@@ -1,7 +1,13 @@
 // api/index.js
 
 const mongoose = require('mongoose');
-const Brand = require('../models/Brand'); 
+
+// ===================================================================
+// DİKKAT: Veritabanı modeli (Marka şeması) henüz tanımlanmadı.
+// Projenizdeki marka modelinizin yolunu ve adını buraya eklemelisiniz.
+// Aşağıdaki satır örnek bir yoldur, kendi dosyanıza göre düzeltin.
+// ===================================================================
+// const Marka = require('../models/markaModel'); 
 
 // Global bağlantı durumunu Vercel'de yeniden başlatma maliyetini azaltmak için tutarız
 let cached = global.mongoose;

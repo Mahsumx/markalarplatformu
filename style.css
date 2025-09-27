@@ -340,6 +340,8 @@ header p {
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(10px);
     animation: modalFadeIn 0.3s ease-out;
+    align-items: center;
+    justify-content: center;
 }
 
 @keyframes modalFadeIn {

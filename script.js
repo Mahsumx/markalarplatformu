@@ -7,68 +7,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeButton = document.querySelector('.close-button');
     const searchInput = document.getElementById('searchInput');
     const filterButtons = document.querySelectorAll('.filter-btn');
+    const loadingIndicator = document.getElementById('loadingIndicator');
     
-    // API base URL düzeltildi: 
-    // Vercel'de doğru domaini (markalarplatformu.com) kullanması için
-    // sadece göreli yol '/api' olarak ayarlandı.
-    const API_BASE = '/api'; 
+    // ⚠️ DÜZELTME: Production ve development için dinamik API URL
+    const API_BASE = window.location.hostname === 'localhost' 
+        ? 'http://localhost:3000/api' 
+        : '/api'; 
     
     // Markaları saklamak için
     let allBrands = [];
     let filteredBrands = [];
-
-    // Backend'den markaları yükle
-    const loadBrands = async () => {
-        // "Markalar yükleniyor..." mesajını gösteren bir yükleme göstergeniz varsa, 
-        // onu burada etkinleştirebilirsiniz.
-
-        try {
-            // API_BASE artık '/api' olduğu için, istek canlı sitede doğru domaini kullanacak.
-            const response = await fetch(`${API_BASE}/brands?isActive=true&sortBy=sortOrder&sortOrder=asc`);
-            const data = await response.json();
-            
-            if (data.success) {
-                allBrands = data.data;
-                filteredBrands = [...allBrands];
-                renderBrands();
-            } else {
-                console.error('Markalar yüklenemedi:', data.message);
-                // Fallback: statik markaları göster
-                loadStaticBrands();
-            }
-        } catch (error) {
-            console.error('API bağlantı hatası:', error);
-            // Fallback: statik markaları göster
-            loadStaticBrands();
-        }
-    };
-
-    // Statik markaları yükle (fallback)
-    const loadStaticBrands = () => {
-        // Mevcut statik markaları koru
-        allBrands = Array.from(document.querySelectorAll('.brand-box')).map(box => ({
-            _id: Math.random().toString(36).substr(2, 9),
-            name: box.querySelector('.brand-name').textContent,
-            telegram: box.getAttribute('data-telegram'),
-            whatsapp: box.getAttribute('data-whatsapp'),
-            logo: box.querySelector('.brand-logo i').className
-        }));
-        filteredBrands = [...allBrands];
-        renderBrands();
-    };
-
-    // Markaları render et
-    const renderBrands = () => {
-        brandContainer.innerHTML = '';
-        
-        filteredBrands.forEach(brand => {
-            const brandBox = createBrandBox(brand);
-            brandContainer.appendChild(brandBox);
-        });
-        
-        // Event listener'ları ekle
-        addBrandEventListeners();
-    };
 
     // Rastgele renk seçici
     const getRandomColor = () => {
@@ -86,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const randomColor = getRandomColor();
         
+        // Marka logosu API'den gelen değere göre ayarlanır
         brandBox.innerHTML = `
             <div class="brand-logo ${randomColor}"><i class="${brand.logo || 'fas fa-tag'}"></i></div>
             <div class="brand-name">${brand.name}</div>
@@ -94,10 +43,103 @@ document.addEventListener('DOMContentLoaded', () => {
         return brandBox;
     };
 
+    // Marka event listener'larını ekle
+    const addBrandEventListeners = () => {
+        const brandBoxes = document.querySelectorAll('.brand-box');
+        
+        brandBoxes.forEach(box => {
+            box.addEventListener('click', () => {
+                const brandName = box.querySelector('.brand-name').textContent;
+                const telegramUrl = box.getAttribute('data-telegram');
+                const whatsappUrl = box.getAttribute('data-whatsapp');
+
+                modalBrandName.textContent = brandName;
+                telegramLink.href = telegramUrl;
+                whatsappLink.href = whatsappUrl;
+
+                modal.style.display = 'flex';
+            });
+        });
+    };
+
+    // Markaları render et
+    const renderBrands = () => {
+        brandContainer.innerHTML = '';
+        
+        if (filteredBrands.length === 0) {
+            brandContainer.innerHTML = '<p style="text-align: center; color: #999; margin-top: 50px;">Aradığınız kriterlere uygun marka bulunamadı.</p>';
+        } else {
+            filteredBrands.forEach(brand => {
+                const brandBox = createBrandBox(brand);
+                brandContainer.appendChild(brandBox);
+            });
+        }
+        
+        // Event listener'ları ekle
+        addBrandEventListeners();
+    };
+
+    // Statik markaları yükle (fallback)
+    const loadStaticBrands = () => {
+        // Mevcut DOM'daki statik markaları API veri yapısına dönüştür
+        allBrands = Array.from(document.querySelectorAll('.brand-box')).map(box => {
+            const logoElement = box.querySelector('.brand-logo i');
+            return {
+                _id: box.getAttribute('data-id') || Math.random().toString(36).substr(2, 9),
+                name: box.querySelector('.brand-name').textContent,
+                telegram: box.getAttribute('data-telegram'),
+                whatsapp: box.getAttribute('data-whatsapp'),
+                logo: logoElement ? logoElement.className : 'fas fa-tag' 
+            };
+        });
+        filteredBrands = [...allBrands];
+        renderBrands(); 
+    };
+
+    // Backend'den markaları yükle
+    const loadBrands = async () => {
+        // Yükleniyor göstergesini göster (Eğer varsa)
+        if (loadingIndicator) {
+             loadingIndicator.style.display = 'block';
+        }
+
+        try {
+            const response = await fetch(`${API_BASE}/brands?isActive=true&sortBy=sortOrder&sortOrder=asc`);
+
+            // Yanıtın başarılı (200-299) olup olmadığını kontrol et
+            if (!response.ok) {
+                 const errorBody = await response.text(); 
+                 throw new Error(`HTTP Hatası: ${response.status} ${response.statusText}. API yanıtı beklenildiği gibi değil.`);
+            }
+
+            const data = await response.json();
+            
+            if (data.success) {
+                allBrands = data.data;
+                filteredBrands = [...allBrands];
+                renderBrands();
+            } else {
+                console.error('Markalar yüklenemedi:', data.message);
+                loadStaticBrands();
+            }
+        } catch (error) {
+            console.error('API bağlantı hatası:', error.message);
+            // Fallback: statik markaları göster
+            loadStaticBrands();
+        } finally {
+             // Yükleniyor göstergesini gizle
+            if (loadingIndicator) {
+                 loadingIndicator.style.display = 'none';
+            }
+        }
+    };
+
     // Arama ve filtreleme fonksiyonu
     const filterBrands = () => {
         const searchText = searchInput.value.toLowerCase();
-        const activeFilter = document.querySelector('.filter-btn.active').getAttribute('data-filter');
+        const activeFilterElement = document.querySelector('.filter-btn.active');
+        const activeFilter = activeFilterElement ? activeFilterElement.getAttribute('data-filter') : 'all';
+
 
         filteredBrands = allBrands.filter(brand => {
             const brandName = brand.name.toLowerCase();
@@ -109,9 +151,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Harf aralığına göre filtreleme
-            if (activeFilter !== 'all') {
+            if (isVisible && activeFilter !== 'all') {
                 const firstLetter = brandName.charAt(0);
                 let letterRange = '';
+
                 if (firstLetter >= 'a' && firstLetter <= 'g') {
                     letterRange = 'A-G';
                 } else if (firstLetter >= 'h' && firstLetter <= 'o') {
@@ -144,25 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Marka event listener'larını ekle
-    const addBrandEventListeners = () => {
-        const brandBoxes = document.querySelectorAll('.brand-box');
-        
-        brandBoxes.forEach(box => {
-            box.addEventListener('click', () => {
-                const brandName = box.querySelector('.brand-name').textContent;
-                const telegramUrl = box.getAttribute('data-telegram');
-                const whatsappUrl = box.getAttribute('data-whatsapp');
-
-                modalBrandName.textContent = brandName;
-                telegramLink.href = telegramUrl;
-                whatsappLink.href = whatsappUrl;
-
-                modal.style.display = 'flex';
-            });
-        });
-    };
-
+    // Modal kapatma olayları
     closeButton.addEventListener('click', () => {
         modal.style.display = 'none';
     });
