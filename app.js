@@ -55,7 +55,7 @@ app.use(express.static(path.join(__dirname)));
 // MongoDB connection
 const connectDB = async () => {
     try {
-        const mongoURI = process.env.MONGODB_URI || process.env.DATABASE_URL || 'mongodb://localhost:27017/markalarplatformu';
+        const mongoURI = process.env.DATABASE_URL || process.env.MONGODB_URI || 'mongodb://localhost:27017/markalarplatformu';
         await mongoose.connect(mongoURI, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
