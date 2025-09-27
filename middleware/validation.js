@@ -31,16 +31,17 @@ const validateBrandCreate = [
     body('logo')
         .optional()
         .trim()
-        .isLength({ max: 50 })
-        .withMessage('Logo 50 karakterden fazla olamaz'),
+        .isLength({ max: 200 })
+        .withMessage('Logo 200 karakterden fazla olamaz'),
     
     body('telegram')
         .optional()
-        .isURL()
-        .withMessage('Geçerli bir Telegram URL\'si giriniz')
         .custom((value) => {
-            if (value && !value.includes('t.me/')) {
-                throw new Error('Telegram URL\'si t.me/ içermelidir');
+            if (value && value.trim() !== '') {
+                // Boş değilse URL formatında olmalı
+                if (!value.startsWith('http')) {
+                    throw new Error('Telegram URL\'si http:// veya https:// ile başlamalıdır');
+                }
             }
             return true;
         }),
@@ -48,11 +49,11 @@ const validateBrandCreate = [
     body('whatsapp')
         .optional()
         .custom((value) => {
-            if (value && !value.includes('wa.me/')) {
-                throw new Error('WhatsApp URL\'si wa.me/ içermelidir');
-            }
-            if (value && !value.startsWith('https://wa.me/')) {
-                throw new Error('WhatsApp URL\'si https://wa.me/ ile başlamalıdır');
+            if (value && value.trim() !== '') {
+                // Boş değilse URL formatında olmalı
+                if (!value.startsWith('http')) {
+                    throw new Error('WhatsApp URL\'si http:// veya https:// ile başlamalıdır');
+                }
             }
             return true;
         }),
@@ -60,8 +61,11 @@ const validateBrandCreate = [
     body('website')
         .optional()
         .custom((value) => {
-            if (value && value !== 'https://example.com' && !value.startsWith('http')) {
-                throw new Error('Website URL\'si http:// veya https:// ile başlamalıdır');
+            if (value && value.trim() !== '' && value !== 'https://example.com') {
+                // Boş değilse URL formatında olmalı
+                if (!value.startsWith('http')) {
+                    throw new Error('Website URL\'si http:// veya https:// ile başlamalıdır');
+                }
             }
             return true;
         }),
@@ -71,31 +75,10 @@ const validateBrandCreate = [
         .isIn(['giyim', 'ayakkabı', 'aksesuar', 'ev tekstili', 'diğer'])
         .withMessage('Geçerli bir kategori seçiniz'),
     
-    body('contactInfo.phone')
+    body('sortOrder')
         .optional()
-        .trim()
-        .isLength({ max: 20 })
-        .withMessage('Telefon numarası 20 karakterden fazla olamaz'),
-    
-    body('contactInfo.email')
-        .optional()
-        .isEmail()
-        .withMessage('Geçerli bir email adresi giriniz'),
-    
-    body('socialMedia.instagram')
-        .optional()
-        .isURL()
-        .withMessage('Geçerli bir Instagram URL\'si giriniz'),
-    
-    body('socialMedia.facebook')
-        .optional()
-        .isURL()
-        .withMessage('Geçerli bir Facebook URL\'si giriniz'),
-    
-    body('socialMedia.twitter')
-        .optional()
-        .isURL()
-        .withMessage('Geçerli bir Twitter URL\'si giriniz'),
+        .isInt({ min: 0 })
+        .withMessage('Sıralama değeri 0 veya pozitif bir sayı olmalıdır'),
     
     body('tags')
         .optional()
@@ -132,16 +115,17 @@ const validateBrandUpdate = [
     body('logo')
         .optional()
         .trim()
-        .isLength({ max: 50 })
-        .withMessage('Logo 50 karakterden fazla olamaz'),
+        .isLength({ max: 200 })
+        .withMessage('Logo 200 karakterden fazla olamaz'),
     
     body('telegram')
         .optional()
-        .isURL()
-        .withMessage('Geçerli bir Telegram URL\'si giriniz')
         .custom((value) => {
-            if (value && !value.includes('t.me/')) {
-                throw new Error('Telegram URL\'si t.me/ içermelidir');
+            if (value && value.trim() !== '') {
+                // Boş değilse URL formatında olmalı
+                if (!value.startsWith('http')) {
+                    throw new Error('Telegram URL\'si http:// veya https:// ile başlamalıdır');
+                }
             }
             return true;
         }),
@@ -149,11 +133,11 @@ const validateBrandUpdate = [
     body('whatsapp')
         .optional()
         .custom((value) => {
-            if (value && !value.includes('wa.me/')) {
-                throw new Error('WhatsApp URL\'si wa.me/ içermelidir');
-            }
-            if (value && !value.startsWith('https://wa.me/')) {
-                throw new Error('WhatsApp URL\'si https://wa.me/ ile başlamalıdır');
+            if (value && value.trim() !== '') {
+                // Boş değilse URL formatında olmalı
+                if (!value.startsWith('http')) {
+                    throw new Error('WhatsApp URL\'si http:// veya https:// ile başlamalıdır');
+                }
             }
             return true;
         }),
@@ -161,8 +145,11 @@ const validateBrandUpdate = [
     body('website')
         .optional()
         .custom((value) => {
-            if (value && value !== 'https://example.com' && !value.startsWith('http')) {
-                throw new Error('Website URL\'si http:// veya https:// ile başlamalıdır');
+            if (value && value.trim() !== '' && value !== 'https://example.com') {
+                // Boş değilse URL formatında olmalı
+                if (!value.startsWith('http')) {
+                    throw new Error('Website URL\'si http:// veya https:// ile başlamalıdır');
+                }
             }
             return true;
         }),
@@ -181,6 +168,17 @@ const validateBrandUpdate = [
         .optional()
         .isInt({ min: 0 })
         .withMessage('Sıralama değeri 0 veya pozitif bir sayı olmalıdır'),
+    
+    body('tags')
+        .optional()
+        .isArray()
+        .withMessage('Etiketler bir dizi olmalıdır'),
+    
+    body('tags.*')
+        .optional()
+        .trim()
+        .isLength({ min: 1, max: 30 })
+        .withMessage('Her etiket 1-30 karakter arasında olmalıdır'),
     
     handleValidationErrors
 ];
