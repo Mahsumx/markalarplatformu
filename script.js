@@ -8,8 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
     const filterButtons = document.querySelectorAll('.filter-btn');
     
-    // API base URL
-    const API_BASE = 'http://localhost:3000/api';
+    // API base URL düzeltildi: 
+    // Vercel'de doğru domaini (markalarplatformu.com) kullanması için
+    // sadece göreli yol '/api' olarak ayarlandı.
+    const API_BASE = '/api'; 
     
     // Markaları saklamak için
     let allBrands = [];
@@ -17,7 +19,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Backend'den markaları yükle
     const loadBrands = async () => {
+        // "Markalar yükleniyor..." mesajını gösteren bir yükleme göstergeniz varsa, 
+        // onu burada etkinleştirebilirsiniz.
+
         try {
+            // API_BASE artık '/api' olduğu için, istek canlı sitede doğru domaini kullanacak.
             const response = await fetch(`${API_BASE}/brands?isActive=true&sortBy=sortOrder&sortOrder=asc`);
             const data = await response.json();
             
@@ -48,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
             logo: box.querySelector('.brand-logo i').className
         }));
         filteredBrands = [...allBrands];
+        renderBrands();
     };
 
     // Markaları render et
@@ -66,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Rastgele renk seçici
     const getRandomColor = () => {
         const colors = ['color-1', 'color-2', 'color-3', 'color-4', 'color-5', 
-                       'color-6', 'color-7', 'color-8', 'color-9', 'color-10'];
+                        'color-6', 'color-7', 'color-8', 'color-9', 'color-10'];
         return colors[Math.floor(Math.random() * colors.length)];
     };
 
