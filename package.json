@@ -9,6 +9,7 @@
     "test": "jest",
     "init-db": "node scripts/init-db.js",
     "init-production-db": "node scripts/init-production-db.js",
+    "update-admin": "node scripts/update-admin.js",
     "build": "echo 'No build step required'"
   },
   "keywords": ["textile", "brands", "api", "nodejs", "express"],

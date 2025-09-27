@@ -22,18 +22,18 @@ async function initProductionDatabase() {
         console.log('✅ MongoDB bağlantısı başarılı');
 
         // Admin kullanıcısı oluştur
-        const existingAdmin = await Admin.findOne({ email: process.env.ADMIN_EMAIL });
+        const existingAdmin = await Admin.findOne({ email: 'admin@marka.com' });
         if (!existingAdmin) {
             const admin = new Admin({
                 username: 'admin',
-                email: process.env.ADMIN_EMAIL,
-                password: process.env.ADMIN_PASSWORD,
+                email: 'admin@marka.com',
+                password: 'Mahsum.47',
                 role: 'admin'
             });
             
             await admin.save();
             console.log('✅ Admin kullanıcısı oluşturuldu');
-            console.log('📧 Email:', process.env.ADMIN_EMAIL);
+            console.log('📧 Email: admin@marka.com');
         } else {
             console.log('ℹ️ Admin kullanıcısı zaten mevcut');
         }
