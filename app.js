@@ -84,6 +84,15 @@ app.get('/api', (req, res) => {
     });
 });
 
+// Test endpoint
+app.get('/api/test', (req, res) => {
+    res.json({
+        success: true,
+        message: 'API çalışıyor!',
+        timestamp: new Date().toISOString()
+    });
+});
+
 // API Routes
 app.use('/api/brands', brandRoutes);
 app.use('/api/admin', adminRoutes);
