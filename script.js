@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingIndicator = document.getElementById('loadingIndicator');
     
     // ⚠️ DÜZELTME: Production ve development için dinamik API URL
-    const API_BASE = window.location.hostname === 'localhost' 
+    const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
         ? 'http://localhost:3000/api' 
         : '/api'; 
     
@@ -34,10 +34,26 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const randomColor = getRandomColor();
         
-        // Marka logosu API'den gelen değere göre ayarlanır
+        // Marka logosu için özel tasarım
+        let logoHtml = '';
+        if (brand.logo && brand.logo.startsWith('fas fa-')) {
+            // FontAwesome ikonları için özel tasarım
+            logoHtml = `<div class="brand-logo ${randomColor}">
+                <i class="${brand.logo}"></i>
+                <div class="logo-glow"></div>
+            </div>`;
+        } else {
+            // Varsayılan logo
+            logoHtml = `<div class="brand-logo ${randomColor}">
+                <i class="fas fa-tag"></i>
+                <div class="logo-glow"></div>
+            </div>`;
+        }
+        
         brandBox.innerHTML = `
-            <div class="brand-logo ${randomColor}"><i class="${brand.logo || 'fas fa-tag'}"></i></div>
+            ${logoHtml}
             <div class="brand-name">${brand.name}</div>
+            <div class="brand-category">${brand.category || 'Tekstil'}</div>
         `;
         
         return brandBox;
@@ -104,7 +120,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const response = await fetch(`${API_BASE}/brands?isActive=true&sortBy=sortOrder&sortOrder=asc`);
+            console.log('API_BASE:', API_BASE);
+            const apiUrl = `${API_BASE}/brands?isActive=true&sortBy=sortOrder&sortOrder=asc`;
+            console.log('API URL:', apiUrl);
+            const response = await fetch(apiUrl);
 
             // Yanıtın başarılı (200-299) olup olmadığını kontrol et
             if (!response.ok) {

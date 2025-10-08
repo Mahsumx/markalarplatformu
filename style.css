@@ -36,13 +36,30 @@ body {
 /* Header Styles */
 header {
     text-align: center;
-    padding: 60px 20px 40px;
+    padding: 40px 20px 40px;
     position: relative;
     z-index: 10;
 }
 
+.logo-container {
+    margin-bottom: 20px;
+    animation: fadeInUp 1s ease-out 0.3s both;
+}
+
+.logo {
+    height: 60px;
+    width: auto;
+    filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.1));
+    transition: var(--transition);
+}
+
+.logo:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(0 6px 25px rgba(0, 0, 0, 0.15));
+}
+
 header h1 {
-    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-size: clamp(2rem, 4vw, 3rem);
     font-weight: 800;
     background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
     -webkit-background-clip: text;
@@ -285,6 +302,29 @@ header p {
     z-index: 2;
 }
 
+.logo-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120%;
+    height: 120%;
+    border-radius: 50%;
+    opacity: 0;
+    transition: var(--transition);
+    z-index: -1;
+}
+
+.brand-box:hover .logo-glow {
+    opacity: 0.3;
+    animation: logoGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes logoGlow {
+    0% { transform: translate(-50%, -50%) scale(1); }
+    100% { transform: translate(-50%, -50%) scale(1.2); }
+}
+
 /* Rastgele renkler için CSS sınıfları */
 .brand-logo.color-1 { color: #FF6B6B; text-shadow: 0 0 20px rgba(255, 107, 107, 0.5); } /* Kırmızı */
 .brand-logo.color-2 { color: #4ECDC4; text-shadow: 0 0 20px rgba(78, 205, 196, 0.5); } /* Turkuaz */
@@ -321,6 +361,23 @@ header p {
     transition: var(--transition);
     position: relative;
     z-index: 2;
+    margin-bottom: 8px;
+}
+
+.brand-category {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: var(--transition);
+    z-index: 2;
+    position: relative;
+}
+
+.brand-box:hover .brand-category {
+    color: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
 }
 
 .brand-box:hover .brand-name {
