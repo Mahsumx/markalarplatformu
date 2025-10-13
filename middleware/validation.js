@@ -28,11 +28,22 @@ const validateBrandCreate = [
         .isLength({ max: 500 })
         .withMessage('Açıklama 500 karakterden fazla olamaz'),
     
+    body('shortDescription')
+        .optional()
+        .trim()
+        .isLength({ max: 150 })
+        .withMessage('Kısa açıklama 150 karakterden fazla olamaz'),
+    
     body('logo')
         .optional()
         .trim()
         .isLength({ max: 200 })
         .withMessage('Logo 200 karakterden fazla olamaz'),
+    
+    body('logoType')
+        .optional()
+        .isIn(['icon', 'image'])
+        .withMessage('Logo türü icon veya image olmalıdır'),
     
     body('telegram')
         .optional()
@@ -112,11 +123,22 @@ const validateBrandUpdate = [
         .isLength({ max: 500 })
         .withMessage('Açıklama 500 karakterden fazla olamaz'),
     
+    body('shortDescription')
+        .optional()
+        .trim()
+        .isLength({ max: 150 })
+        .withMessage('Kısa açıklama 150 karakterden fazla olamaz'),
+    
     body('logo')
         .optional()
         .trim()
         .isLength({ max: 200 })
         .withMessage('Logo 200 karakterden fazla olamaz'),
+    
+    body('logoType')
+        .optional()
+        .isIn(['icon', 'image'])
+        .withMessage('Logo türü icon veya image olmalıdır'),
     
     body('telegram')
         .optional()

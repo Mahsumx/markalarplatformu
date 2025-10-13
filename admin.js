@@ -2,7 +2,7 @@
 class AdminPanel {
     constructor() {
         // ⚠️ DÜZELTME: Production ve development için dinamik API URL
-        this.apiBase = window.location.hostname === 'localhost' 
+        this.apiBase = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') 
             ? 'http://localhost:3000/api' 
             : '/api';
         this.token = localStorage.getItem('adminToken');
@@ -114,7 +114,19 @@ class AdminPanel {
                 body: JSON.stringify({ email, password })
             });
 
-            const data = await response.json();
+            // Response'un başarılı olup olmadığını kontrol et
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            // Response'un boş olup olmadığını kontrol et
+            const responseText = await response.text();
+            if (!responseText) {
+                throw new Error('Sunucudan boş yanıt alındı');
+            }
+
+            // JSON parse et
+            const data = JSON.parse(responseText);
 
             if (data.success) {
                 this.token = data.data.token;
@@ -125,6 +137,7 @@ class AdminPanel {
                 this.showError(errorDiv, data.message);
             }
         } catch (error) {
+            console.error('Login error:', error);
             this.showError(errorDiv, 'Bağlantı hatası: ' + error.message);
         } finally {
             loginBtn.disabled = false;
@@ -140,7 +153,19 @@ class AdminPanel {
                 }
             });
 
-            const data = await response.json();
+            // Response'un başarılı olup olmadığını kontrol et
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            // Response'un boş olup olmadığını kontrol et
+            const responseText = await response.text();
+            if (!responseText) {
+                throw new Error('Sunucudan boş yanıt alındı');
+            }
+
+            // JSON parse et
+            const data = JSON.parse(responseText);
 
             if (data.success) {
                 this.showDashboard();
@@ -149,6 +174,7 @@ class AdminPanel {
                 this.logout();
             }
         } catch (error) {
+            console.error('Token verification error:', error);
             this.logout();
         }
     }
@@ -334,11 +360,13 @@ class AdminPanel {
                 document.getElementById('brandId').value = brand._id;
                 document.getElementById('brandName').value = brand.name;
                 document.getElementById('brandDescription').value = brand.description || '';
+                document.getElementById('brandShortDescription').value = brand.shortDescription || '';
                 document.getElementById('brandCategory').value = brand.category;
                 document.getElementById('brandTelegram').value = brand.telegram || '';
                 document.getElementById('brandWhatsapp').value = brand.whatsapp || '';
                 document.getElementById('brandWebsite').value = brand.website || '';
                 document.getElementById('brandLogo').value = brand.logo || '';
+                document.getElementById('brandLogoType').value = brand.logoType || 'icon';
                 document.getElementById('brandSortOrder').value = brand.sortOrder || 0;
                 document.getElementById('brandTags').value = brand.tags ? brand.tags.join(', ') : '';
                 document.getElementById('brandModal').style.display = 'block';
@@ -355,11 +383,13 @@ class AdminPanel {
         const brandData = {
             name: document.getElementById('brandName').value,
             description: document.getElementById('brandDescription').value,
+            shortDescription: document.getElementById('brandShortDescription').value,
             category: document.getElementById('brandCategory').value,
             telegram: document.getElementById('brandTelegram').value,
             whatsapp: document.getElementById('brandWhatsapp').value,
             website: document.getElementById('brandWebsite').value,
             logo: document.getElementById('brandLogo').value,
+            logoType: document.getElementById('brandLogoType').value,
             sortOrder: parseInt(document.getElementById('brandSortOrder').value),
             tags: document.getElementById('brandTags').value.split(',').map(tag => tag.trim()).filter(tag => tag)
         };

@@ -11,7 +11,7 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Lato:wght@300;400;700;900&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Lato:wght@300;400;700;900&family=Roboto:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -21,20 +21,50 @@
         <div class="logo-container">
             <img src="logo.svg" alt="Markalar Platformu Logo" class="logo">
         </div>
-        <h1>Markalar Platformu</h1>
-        <p>Tekstil markalarına kolayca ulaşın. İlgilendiğiniz markaya tıklayarak iletişim kurun.</p>
     </header>
 
     <!-- Arama ve Filtreleme Bölümü -->
     <div class="controls">
         <input type="text" id="searchInput"  placeholder="Marka ara...">
         <div class="filter-buttons">
-            <button class="filter-btn active" data-filter="all">Tümü</button>
-            <button class="filter-btn" data-filter="A-G">A-G</button>
-            <button class="filter-btn" data-filter="H-O">H-O</button>
-            <button class="filter-btn" data-filter="P-Z">P-Z</button>
+            <button class="filter-btn active" data-filter="all">Tüm Markalar</button>
+            <button class="filter-btn" data-filter="giyim">Giyim</button>
+            <button class="filter-btn" data-filter="ayakkabı">Ayakkabı</button>
+            <button class="filter-btn" data-filter="aksesuar">Aksesuar</button>
+            <button class="filter-btn" data-filter="ev tekstili">Ev Tekstili</button>
+            <button class="filter-btn" data-filter="diğer">Diğer</button>
         </div>
     </div>
+
+    <!-- Nasıl Çalışır Bölümü -->
+    <section class="how-it-works">
+        <div class="how-it-works-container">
+            <h2>Nasıl Çalışır?</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>Markayı Seçin</h3>
+                    <p>İhtiyacınıza uygun markayı bulun ve kutucuğa tıklayın</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3>İletişime Geçin</h3>
+                    <p>Telegram veya WhatsApp üzerinden doğrudan marka ile iletişim kurun</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3>İş Yapın</h3>
+                    <p>Marka ile görüşerek ihtiyacınızı karşılayın</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <main class="brand-container">
         <!-- Markalar dinamik olarak yüklenecek -->
@@ -53,6 +83,50 @@
                 <a id="telegram-link" href="#" target="_blank" class="contact-button telegram">Telegram</a>
                 <a id="whatsapp-link" href="#" target="_blank" class="contact-button whatsapp">WhatsApp</a>
             </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Markalar Platformu</h3>
+                    <p>Kaliteli tekstil üreticileriyle doğrudan iletişim kurun.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Hızlı Linkler</h4>
+                    <ul>
+                        <li><a href="#how-it-works">Nasıl Çalışır</a></li>
+                        <li><a href="#brands">Markalar</a></li>
+                        <li><a href="admin.html">Admin Panel</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Yasal</h4>
+                    <ul>
+                        <li><a href="#" onclick="showPrivacyPolicy()">Gizlilik Politikası</a></li>
+                        <li><a href="#" onclick="showTermsOfService()">Hizmet Şartları</a></li>
+                        <li><a href="#" onclick="showContact()">İletişim</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>İletişim</h4>
+                    <p>📧 info@markalarplatformu.com</p>
+                    <p>📱 +90 555 123 45 67</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Markalar Platformu. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Yasal Sayfalar Modal -->
+    <div id="legalModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeLegalModal()">&times;</span>
+            <div id="legalContent"></div>
         </div>
     </div>
 

@@ -13,9 +13,19 @@ const brandSchema = new mongoose.Schema({
         trim: true,
         maxlength: [500, 'Açıklama 500 karakterden fazla olamaz']
     },
+    shortDescription: {
+        type: String,
+        trim: true,
+        maxlength: [150, 'Kısa açıklama 150 karakterden fazla olamaz']
+    },
     logo: {
         type: String,
-        default: 'fas fa-tag' // FontAwesome icon class
+        default: 'fas fa-tag' // FontAwesome icon class or image URL
+    },
+    logoType: {
+        type: String,
+        enum: ['icon', 'image'],
+        default: 'icon'
     },
     telegram: {
         type: String,

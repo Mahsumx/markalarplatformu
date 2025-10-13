@@ -36,7 +36,13 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Marka logosu için özel tasarım
         let logoHtml = '';
-        if (brand.logo && brand.logo.startsWith('fas fa-')) {
+        if (brand.logoType === 'image' && brand.logo) {
+            // Gerçek logo resmi
+            logoHtml = `<div class="brand-logo brand-logo-image">
+                <img src="${brand.logo}" alt="${brand.name} Logo" class="brand-logo-img">
+                <div class="logo-glow"></div>
+            </div>`;
+        } else if (brand.logo && brand.logo.startsWith('fas fa-')) {
             // FontAwesome ikonları için özel tasarım
             logoHtml = `<div class="brand-logo ${randomColor}">
                 <i class="${brand.logo}"></i>
@@ -50,10 +56,15 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>`;
         }
         
+        // Kısa açıklama varsa ekle
+        const descriptionHtml = brand.shortDescription ? 
+            `<div class="brand-description">${brand.shortDescription}</div>` : '';
+        
         brandBox.innerHTML = `
             ${logoHtml}
             <div class="brand-name">${brand.name}</div>
             <div class="brand-category">${brand.category || 'Tekstil'}</div>
+            ${descriptionHtml}
         `;
         
         return brandBox;
@@ -85,7 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (filteredBrands.length === 0) {
             brandContainer.innerHTML = '<p style="text-align: center; color: #999; margin-top: 50px;">Aradığınız kriterlere uygun marka bulunamadı.</p>';
         } else {
-            filteredBrands.forEach(brand => {
+            // Markaları rastgele sırala (her render'da farklı sıralama)
+            const shuffledBrands = [...filteredBrands].sort(() => Math.random() - 0.5);
+            
+            shuffledBrands.forEach(brand => {
                 const brandBox = createBrandBox(brand);
                 brandContainer.appendChild(brandBox);
             });
@@ -159,7 +173,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const activeFilterElement = document.querySelector('.filter-btn.active');
         const activeFilter = activeFilterElement ? activeFilterElement.getAttribute('data-filter') : 'all';
 
-
         filteredBrands = allBrands.filter(brand => {
             const brandName = brand.name.toLowerCase();
             let isVisible = true;
@@ -169,20 +182,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 isVisible = false;
             }
 
-            // Harf aralığına göre filtreleme
+            // Kategoriye göre filtreleme
             if (isVisible && activeFilter !== 'all') {
-                const firstLetter = brandName.charAt(0);
-                let letterRange = '';
-
-                if (firstLetter >= 'a' && firstLetter <= 'g') {
-                    letterRange = 'A-G';
-                } else if (firstLetter >= 'h' && firstLetter <= 'o') {
-                    letterRange = 'H-O';
-                } else if (firstLetter >= 'p' && firstLetter <= 'z') {
-                    letterRange = 'P-Z';
-                }
-
-                if (letterRange !== activeFilter) {
+                if (brand.category !== activeFilter) {
                     isVisible = false;
                 }
             }
@@ -220,3 +222,86 @@ document.addEventListener('DOMContentLoaded', () => {
     // Sayfa yüklendiğinde markaları yükle
     loadBrands();
 });
+
+// Yasal sayfalar için global fonksiyonlar
+function showPrivacyPolicy() {
+    const content = `
+        <h2>Gizlilik Politikası</h2>
+        <div style="text-align: left; line-height: 1.6;">
+            <h3>1. Toplanan Bilgiler</h3>
+            <p>Markalar Platformu olarak, sadece hizmetimizi sunabilmek için gerekli olan minimum bilgileri topluyoruz.</p>
+            
+            <h3>2. Bilgi Kullanımı</h3>
+            <p>Toplanan bilgiler sadece markalar ve kullanıcılar arasında iletişim kurulması için kullanılır.</p>
+            
+            <h3>3. Bilgi Paylaşımı</h3>
+            <p>Kişisel bilgileriniz üçüncü taraflarla paylaşılmaz.</p>
+            
+            <h3>4. Güvenlik</h3>
+            <p>Bilgilerinizin güvenliği için gerekli teknik önlemleri alıyoruz.</p>
+            
+            <h3>5. İletişim</h3>
+            <p>Sorularınız için: info@markalarplatformu.com</p>
+        </div>
+    `;
+    showLegalModal(content);
+}
+
+function showTermsOfService() {
+    const content = `
+        <h2>Hizmet Şartları</h2>
+        <div style="text-align: left; line-height: 1.6;">
+            <h3>1. Hizmet Tanımı</h3>
+            <p>Markalar Platformu, tekstil markaları ile kullanıcılar arasında iletişim kurulmasını sağlayan bir platformdur.</p>
+            
+            <h3>2. Kullanıcı Sorumlulukları</h3>
+            <p>Kullanıcılar platformu yasal amaçlarla kullanmalı ve markalar ile saygılı iletişim kurmalıdır.</p>
+            
+            <h3>3. Platform Sorumlulukları</h3>
+            <p>Platform, markalar ve kullanıcılar arasında iletişim sağlar ancak ticari işlemlerden sorumlu değildir.</p>
+            
+            <h3>4. Fikri Mülkiyet</h3>
+            <p>Platform üzerindeki tüm içerikler telif hakkı ile korunmaktadır.</p>
+            
+            <h3>5. Değişiklikler</h3>
+            <p>Bu şartlar önceden haber verilmeksizin değiştirilebilir.</p>
+        </div>
+    `;
+    showLegalModal(content);
+}
+
+function showContact() {
+    const content = `
+        <h2>İletişim</h2>
+        <div style="text-align: left; line-height: 1.6;">
+            <h3>📧 E-posta</h3>
+            <p>info@markalarplatformu.com</p>
+            
+            <h3>📱 Telefon</h3>
+            <p>+90 555 123 45 67</p>
+            
+            <h3>📍 Adres</h3>
+            <p>İstanbul, Türkiye</p>
+            
+            <h3>🕒 Çalışma Saatleri</h3>
+            <p>Pazartesi - Cuma: 09:00 - 18:00</p>
+            
+            <h3>💬 Sosyal Medya</h3>
+            <p>Instagram: @markalarplatformu</p>
+            <p>LinkedIn: Markalar Platformu</p>
+        </div>
+    `;
+    showLegalModal(content);
+}
+
+function showLegalModal(content) {
+    const modal = document.getElementById('legalModal');
+    const contentDiv = document.getElementById('legalContent');
+    contentDiv.innerHTML = content;
+    modal.style.display = 'flex';
+}
+
+function closeLegalModal() {
+    const modal = document.getElementById('legalModal');
+    modal.style.display = 'none';
+}
